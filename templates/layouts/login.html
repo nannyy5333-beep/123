@@ -1,0 +1,20 @@
+
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-4">
+    <div class="card shadow">
+      <div class="card-body">
+        <h5 class="card-title">Вход</h5>
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Пароль</label>
+            <input class="form-control" type="password" name="password" required>
+          </div>
+          <button class="btn btn-dark w-100">Войти</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+
+{# _macros.html — UI макросы #}
+{% macro empty_state(title, subtitle='', action_html='') -%}
+  <div class="card p-6 container-narrow" style="text-align:center;margin:2rem auto;">
+    <div class="h2">{{ title }}</div>
+    {% if subtitle %}<div class="text-muted" style="margin:.25rem 0 1rem">{{ subtitle }}</div>{% endif %}
+    {{ action_html|safe }}
+  </div>
+{%- endmacro %}
+
+{% macro badge(text, kind='default') -%}
+  {%- set colors = { 'default':'#2a2e34', 'success':'#34d399', 'warning':'#fde047', 'danger':'#f87171' } -%}
+  <span class="badge" style="background: {{ colors.get(kind,'#2a2e34') }}; color:#0b0c0e">{{ text }}</span>
+{%- endmacro %}

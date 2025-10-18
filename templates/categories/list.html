@@ -1,0 +1,64 @@
+
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Категории / Подкатегории</h4>
+  <div>
+    <a class="btn btn-sm btn-dark" href="{{ url_for('categories.new') }}">+ Категория</a>
+    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('categories.sub_new') }}">+ Подкатегория</a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card"><div class="card-body">
+      <h6>Категории</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped">
+          <thead><tr><th>ID</th><th>Название</th><th class="text-end">Действия</th></tr></thead>
+          <tbody>
+          {% for c in cats %}
+            <tr>
+              <td>{{ c.id }}</td>
+              <td>{{ c.name }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('categories.edit', cid=c.id) }}">Изм.</a>
+                <form method="post" action="{{ url_for('categories.delete', cid=c.id) }}" style="display:inline" onsubmit="return confirm('Удалить?')">
+                  <button class="btn btn-sm btn-outline-danger">Удалить</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div></div>
+  </div>
+  <div class="col-md-6">
+    <div class="card"><div class="card-body">
+      <h6>Подкатегории</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped">
+          <thead><tr><th>ID</th><th>Категория</th><th>Название</th><th class="text-end">Действия</th></tr></thead>
+          <tbody>
+          {% for c in cats %}
+            {% for s in by_cat.get(c.id, []) %}
+              <tr>
+                <td>{{ s.id }}</td>
+                <td>{{ c.name }}</td>
+                <td>{{ s.name }}</td>
+                <td class="text-end">
+                  <a class="btn btn-sm btn-outline-primary" href="{{ url_for('categories.sub_edit', sid=s.id) }}">Изм.</a>
+                  <form method="post" action="{{ url_for('categories.sub_delete', sid=s.id) }}" style="display:inline" onsubmit="return confirm('Удалить?')">
+                    <button class="btn btn-sm btn-outline-danger">Удалить</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,136 @@
+/* ====== Базовые токены (тёмная тема, контраст AA) ====== */
+:root{
+  /* Цвета */
+  --bg-0:#0f1115;        /* фон страницы */
+  --bg-1:#151a1f;        /* панели/карточки */
+  --bg-2:#1b222a;        /* ховеры/зебра */
+  --border:#2a2f36;
+  --text-0:#f3f4f6;      /* заголовки */
+  --text-1:#FFFFFF;      /* обычный текст */
+  --muted:#FFFFFF;       /* пояснения, подписи */
+  --accent:#60a5fa;      /* ссылки/акцент */
+  --ok:#16a34a; --warn:#f59e0b; --err:#ef4444;
+
+  /* Радиусы/тени/отступы */
+  --radius:12px;
+  --shadow-1:0 1px 2px rgba(0,0,0,.35), 0 10px 30px rgba(0,0,0,.22);
+
+  /* Bootstrap CSS variables (работают без перекомпиляции) */
+  --bs-body-bg:var(--bg-0);
+  --bs-body-color:var(--text-1);
+  --bs-heading-color:var(--text-0);
+  --bs-border-color:var(--border);
+  --bs-link-color:var(--accent);
+  --bs-link-hover-color:#93c5fd;
+  --bs-card-bg:var(--bg-1);
+  --bs-table-bg:transparent;
+  --bs-table-striped-bg:rgba(255,255,255,.04);
+  --bs-table-hover-bg:rgba(255,255,255,.06);
+  --bs-btn-border-radius:12px;
+}
+
+/* ====== Кегль + читаемость ====== */
+html{
+  /* Гибкий базовый кегль: 15px…18px в зависимости от ширины */
+  font-size: clamp(15px, calc(15px + 0.25vw), 18px);
+}
+body{
+  line-height:1.55;
+  background:var(--bs-body-bg);
+  color:var(--bs-body-color);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol";
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+.text-muted{ color:var(--muted)!important; opacity:1!important; }
+
+/* ====== Контейнер страницы (фикс «слишком растянуто») ====== */
+.content-wrap{ 
+  max-width: min(1320px, 96vw);
+  margin-inline:auto; 
+  padding:16px 20px;
+}
+
+/* Если нет .content-wrap в шаблоне — подхватим основной <main> */
+main:not(.content-wrap){ max-width:min(1320px, 96vw); margin-inline:auto; padding-inline:20px; }
+
+/* ====== Карточки/панели/модалки — фон, контраст, тени ====== */
+.card, .modal-content, .dropdown-menu, .table, .list-group, .offcanvas, .form-control, .form-select {
+  background-color:var(--bg-1);
+  color:var(--text-1);
+  border-color:var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-1);
+}
+
+/* Заголовки покрупнее и чётче */
+h1{ font-size:clamp(24px, calc(22px + .6vw), 34px); margin-bottom:.6rem; }
+h2{ font-size:clamp(20px, calc(18px + .4vw), 26px); margin-bottom:.6rem; }
+h3{ font-size:clamp(17px, calc(16px + .25vw), 22px); margin-bottom:.5rem; }
+
+/* ====== Таблицы — зебра, липкая шапка, читаемые ховеры ====== */
+.table thead th{
+  position:sticky; top:0; z-index:1;
+  background:var(--bg-1);
+  color:var(--text-0); 
+  font-weight:600; letter-spacing:.02em;
+}
+.table tbody tr:nth-child(odd){ background:var(--bs-table-striped-bg); }
+.table tbody tr:hover{ background:var(--bs-table-hover-bg); }
+.table td, .table th{ vertical-align:middle; }
+
+/* ====== Формы — размер клика и фокус ====== */
+.form-control, .form-select{
+  min-height:44px; 
+  font-size:1rem;
+}
+.form-control:focus, .form-select:focus{
+  border-color:rgba(96,165,250,.7);
+  box-shadow:0 0 0 .2rem rgba(96,165,250,.25);
+}
+
+/* Маленькие кнопки делаем «чуть больше», чтобы были читаемы */
+.btn-sm{ 
+  padding:.45rem .7rem; 
+  font-size:.95rem;
+  border-radius:var(--radius);
+}
+
+/* ====== Плашки остатков (pill) с доступным контрастом ====== */
+.pill{
+  display:inline-flex; align-items:center; gap:.4ch;
+  padding:.2rem .62rem;
+  border-radius:999px;
+  background:#20262d;
+  border:1px solid var(--border);
+  font-weight:600;
+}
+.pill-dot{ width:.55rem; height:.55rem; border-radius:50%; display:inline-block; }
+.pill.ok{ color:#86efac; background:rgba(22,163,74,.12); border-color:rgba(22,163,74,.35); }
+.pill.ok .pill-dot{ background:#16a34a; }
+.pill.warn{ color:#fde68a; background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.35); }
+.pill.warn .pill-dot{ background:#f59e0b; }
+.pill.err{ color:#fecaca; background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.35); }
+.pill.err .pill-dot{ background:#ef4444; }
+
+/* ====== Дашборд: сетка карточек, равные отступы ====== */
+.metrics-grid{
+  display:grid; 
+  grid-template-columns: repeat(12,minmax(0,1fr));
+  gap:16px;
+}
+.metrics-grid .kpi{ grid-column: span 4; }        /* 3 в ряд на десктопе */
+@media (max-width: 1200px){ .metrics-grid .kpi{ grid-column: span 6; } } /* 2 в ряд */
+@media (max-width: 700px){ .metrics-grid .kpi{ grid-column: 1 / -1; } }  /* 1 в ряд */
+.kpi{ padding:16px 18px; background:var(--bg-1); border:1px solid var(--border); border-radius:var(--radius); }
+.kpi .kpi-title{ color:var(--muted); font-weight:600; font-size:.95rem; }
+.kpi .kpi-value{ color:var(--text-0); font-size: clamp(22px, calc(18px + .6vw), 32px); font-weight:700; }
+
+/* ====== Общие хелперы ====== */
+a{ color:var(--bs-link-color); }
+a:hover{ color:var(--bs-link-hover-color); }
+hr{ border-color:var(--border); opacity:1; }
+
+/* На случай старых правок масштабирования — выключаем их */
+body{ transform:none !important; zoom:1 !important; }
+

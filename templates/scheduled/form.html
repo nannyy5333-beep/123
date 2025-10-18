@@ -1,0 +1,23 @@
+
+{% extends "layouts/base.html" %}
+{% block content %}
+<h4>Новое задание автопостинга</h4>
+<form method="post" class="row g-3">
+  <div class="col-md-4">
+    <label class="form-label">ID товара</label>
+    <input class="form-control" name="product_id" type="number" required>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Когда (YYYY-MM-DD HH:MM)</label>
+    <input class="form-control" name="run_at" placeholder="2025-10-18 09:30" required>
+  </div>
+  <div class="col-12">
+    <label class="form-label">Подпись к посту (опционально)</label>
+    <textarea class="form-control" name="caption" rows="3"></textarea>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-dark">Сохранить</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('scheduled.list_') }}">Назад</a>
+  </div>
+</form>
+{% endblock %}

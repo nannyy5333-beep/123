@@ -1,0 +1,16 @@
+
+{% extends "layouts/base.html" %}
+{% block content %}
+<h4>Финансы</h4>
+<ul class="list-group">
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    Заказы сегодня
+    <span class="badge text-bg-secondary">{{ kpis.orders_today }}</span>
+  </li>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    Выручка сегодня
+    <span class="badge text-bg-success">{{ "%.2f"|format(kpis.revenue_today) }}</span>
+  </li>
+</ul>
+<p class="text-muted mt-3">Расширим отчёты (по периодам, категориям, средний чек, возвраты) — есть заготовка в слое db.</p>
+{% endblock %}

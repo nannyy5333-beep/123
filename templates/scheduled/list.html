@@ -1,0 +1,33 @@
+
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Автопостинг</h4>
+  <a class="btn btn-dark" href="{{ url_for('scheduled.new') }}">+ Новое задание</a>
+</div>
+<div class="table-responsive">
+<table class="table table-striped align-middle">
+  <thead><tr><th>ID</th><th>Product</th><th>Run at</th><th>Caption</th><th>Status</th><th class="text-end">Действия</th></tr></thead>
+  <tbody>
+  {% for s in items %}
+    <tr>
+      <td>{{ s.id }}</td>
+      <td>{{ s.product_id }}</td>
+      <td>{{ s.run_at }}</td>
+      <td>{{ s.caption or '-' }}</td>
+      <td>{{ s.status }}</td>
+      <td class="text-end">
+        <form method="post" action="{{ url_for('scheduled.post_now', pid=s.product_id) }}" style="display:inline">
+          <input type="hidden" name="caption" value="{{ s.caption or '' }}">
+          <button class="btn btn-sm btn-outline-primary">Отправить сейчас</button>
+        </form>
+        <form method="post" action="{{ url_for('scheduled.delete', sid=s.id) }}" style="display:inline" onsubmit="return confirm('Удалить задание?')">
+          <button class="btn btn-sm btn-outline-danger">Удалить</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

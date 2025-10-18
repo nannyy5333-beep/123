@@ -1,0 +1,67 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Склад</h4>
+  {% if role_in("admin","manager") %}
+    <div>
+      <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('inventory.export_csv') }}">Экспорт CSV</a>
+      <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('inventory.export_xlsx') }}">Экспорт Excel</a>
+    </div>
+  {% endif %}
+</div>
+
+{% if items and items|length %}
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Остаток</th>
+        <th>Цена</th>
+        <th>Обновлено</th>
+        <th class="text-end">Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for p in items %}
+      {% set st = (p.stock or 0) | int %}
+      {% set thr = (low_thr | default(5)) | int %}
+      {% set cls = 'err' if st <= thr else ('warn' if st <= (thr * 2) else 'ok') %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.name }}</td>
+        <td>
+          <span class="pill {{ cls }}"><span class="pill-dot"></span>{{ st }}</span>
+        </td>
+        <td>{{ "%.2f"|format(p.price or 0) }}</td>
+        <td>{{ p.updated_at[:19] if p.updated_at else '' }}</td>
+        <td class="text-end">
+          {% if role_in("admin","manager") %}
+            <form class="d-inline" method="post" action="{{ url_for('inventory.adjust', pid=p.id) }}">
+              <input type="hidden" name="delta" value="1">
+              <input type="hidden" name="reason" value="manual">
+              <button class="btn btn-sm btn-outline-success">+1</button>
+            </form>
+            <form class="d-inline" method="post" action="{{ url_for('inventory.adjust', pid=p.id) }}">
+              <input type="hidden" name="delta" value="-1">
+              <input type="hidden" name="reason" value="manual">
+              <button class="btn btn-sm btn-outline-danger">-1</button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+  <div class="card p-6" style="text-align:center; margin:2rem 0;">
+    <div class="h3">Нет данных по складу</div>
+    <div class="text-muted">Добавьте товары или обновите остатки, чтобы увидеть список.</div>
+  </div>
+{% endif %}
+
+{% endblock %}
+

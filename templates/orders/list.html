@@ -1,0 +1,41 @@
+
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Заказы</h4>
+  <form class="d-flex" method="get">
+    <select class="form-select me-2" name="status" style="width:220px">
+      <option value="" {{ "selected" if not status }}>Все статусы</option>
+      {% for s in ["created","confirmed","paid","shipped","done","canceled"] %}
+        <option value="{{ s }}" {{ "selected" if status==s }}>{{ s }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-outline-secondary">Фильтр</button>
+  
+  <input class="form-control ms-2" type="date" name="date_from" value="{{ request.args.get('date_from','') }}">
+  <input class="form-control ms-2" type="date" name="date_to" value="{{ request.args.get('date_to','') }}">
+</form>
+{% if role_in("admin","manager") %}<div class="mt-2">
+  <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('orders.export_csv', status=request.args.get('status'), date_from=request.args.get('date_from'), date_to=request.args.get('date_to')) }}">Экспорт CSV</a>
+  <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('orders.export_xlsx', status=request.args.get('status'), date_from=request.args.get('date_from'), date_to=request.args.get('date_to')) }}">Экспорт Excel</a>
+</div>{% endif %}
+</div>
+<div class="table-responsive">
+<table class="table table-striped align-middle">
+  <thead><tr><th>ID</th><th>Клиент</th><th>Статус</th><th>Оплата</th><th>Сумма</th><th>Дата</th><th></th></tr></thead>
+  <tbody>
+  {% for o in items %}
+    <tr>
+      <td>{{ o.id }}</td>
+      <td>{{ o.user_id }}</td>
+      <td>{% set s=(o.status or "created") %}{% set cls= "ok" if s in ["paid","done","shipped","confirmed"] else ("warn" if s in ["created","pending","processing"] else ("err" if s in ["canceled","refunded"] else "neutral")) %}<span class="pill {{ cls }}"><span class="pill-dot"></span>{{ s }}</span></td>
+      <td><span class="badge bg-{{ 'success' if o.payment_status=='paid' else 'warning' }}">{{ o.payment_status or '-' }}</span></td>
+      <td>{{ "%.2f"|format(o.total or 0) }}</td>
+      <td>{{ o.created_at[:19] if o.created_at else '' }}</td>
+      <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('orders.details', oid=o.id) }}">Открыть</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

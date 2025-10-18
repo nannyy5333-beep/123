@@ -1,0 +1,82 @@
+
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Детальная аналитика</h4>
+  <form class="d-flex" method="get">
+    <input class="form-control me-2" type="date" name="date_from" value="{{ date_from }}">
+    <input class="form-control me-2" type="date" name="date_to" value="{{ date_to }}">
+    <button class="btn btn-outline-secondary">Применить</button>
+  </form>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-3"><div class="card"><div class="card-body">
+    <div class="text-muted">Заказы</div><div class="fs-4">{{ data.orders }}</div>
+  </div></div></div>
+  <div class="col-md-3"><div class="card"><div class="card-body">
+    <div class="text-muted">Выручка</div><div class="fs-4">{{ "%.2f"|format(data.revenue) }}</div>
+  </div></div></div>
+  <div class="col-md-3"><div class="card"><div class="card-body">
+    <div class="text-muted">Средний чек</div><div class="fs-4">{{ "%.2f"|format(data.avg_check) }}</div>
+  </div></div></div>
+</div>
+
+<div class="card my-3"><div class="card-body">
+  <h6>Воронка</h6>
+  <ul class="list-inline">
+    {% for s, v in data.funnel.items() %}
+      <li class="list-inline-item badge text-bg-secondary">{{ s }}: {{ v }}</li>
+    {% endfor %}
+  </ul>
+</div></div>
+
+<div class="card my-3"><div class="card-body">
+  <h6>Топ категорий</h6>
+  <div class="table-responsive">
+    <table class="table table-sm table-striped"><thead><tr><th>Категория</th><th>Выручка</th></tr></thead>
+      <tbody>
+      {% for c in data.top_categories %}
+        <tr><td>{{ c.category }}</td><td>{{ "%.2f"|format(c.revenue) }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div></div>
+
+<div class="card my-3"><div class="card-body">
+  <h6>RFM (топ 200)</h6>
+  <div class="table-responsive">
+    <table class="table table-sm table-striped"><thead><tr><th>User</th><th>Recency (days)</th><th>Frequency</th><th>Monetary</th></tr></thead>
+      <tbody>
+      {% for r in data.rfm %}
+        <tr><td>{{ r.user_id }}</td><td>{{ r.recency_days }}</td><td>{{ r.frequency }}</td><td>{{ "%.2f"|format(r.monetary) }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div></div>
+{% endblock %}
+
+<div class="card my-3"><div class="card-body">
+  <h6>Воронка (статусы)</h6>
+  <canvas id="funnelChart" height="80"></canvas>
+</div></div>
+<div class="card my-3"><div class="card-body">
+  <h6>Топ категорий (выручка)</h6>
+  <canvas id="catChart" height="80"></canvas>
+</div></div>
+<script>
+const funnelLabels = {{ data.funnel.keys()|list|tojson }};
+const funnelData = {{ data.funnel.values()|list|tojson }};
+new Chart(document.getElementById('funnelChart'), {
+  type:'bar', data:{labels:funnelLabels, datasets:[{label:'Кол-во', data:funnelData}]},
+  options:{responsive:true, scales:{y:{beginAtZero:true}}}
+});
+const catLabels = {{ (data.top_categories|map(attribute='category')|list)|tojson }};
+const catVals = {{ (data.top_categories|map(attribute='revenue')|list)|tojson }};
+new Chart(document.getElementById('catChart'), {
+  type:'bar', data:{labels:catLabels, datasets:[{label:'Выручка', data:catVals}]},
+  options:{responsive:true, scales:{y:{beginAtZero:true}}}
+});
+</script>

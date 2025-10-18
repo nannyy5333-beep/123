@@ -1,0 +1,46 @@
+/* forms */
+input[type="text"],input[type="number"],input[type="email"],input[type="password"],
+select,textarea{
+  background:var(--input-bg); border:1px solid var(--input-border); color:var(--fg);
+  border-radius:10px; padding:.6rem .8rem;
+}
+input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--input-focus); outline-offset:2px; border-color:var(--input-focus);
+}
+input:disabled,select:disabled,textarea:disabled{ opacity:.6; cursor:not-allowed; }
+.form-error{ color:var(--danger); font-size:.875rem; }
+.form-success{ color:var(--success); font-size:.875rem; }
+
+/* accessibility */
+a:focus-visible,button:focus-visible{ outline:2px solid var(--input-focus); outline-offset:2px; }
+
+/* tables */
+.table-wrap{ overflow-x:auto; }
+.table thead th{ position:sticky; top:0; background:var(--bg-elev); z-index:1; }
+.table tr:nth-child(even){ background:rgba(255,255,255,.02); }
+.table tr:hover{ background:rgba(255,255,255,.04); }
+
+/* responsive helpers */
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+@media (max-width: 992px){
+  .grid-2{ grid-template-columns:1fr; }
+  .sidebar{ transform:translateX(-100%); position:fixed; top:0; left:0; height:100%; z-index:999; }
+}
+/* utilities */
+:root{
+  --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem; --space-6:1.5rem; --space-8:2rem;
+  --fs-1:.75rem; --fs-2:.875rem; --fs-3:1rem; --fs-4:1.125rem; --fs-5:1.25rem;
+}
+.h1{ font-size:2rem; font-weight:700; margin: var(--space-6) 0 var(--space-4) }
+.h2{ font-size:1.5rem; font-weight:600; margin: var(--space-4) 0 var(--space-3) }
+.h3{ font-size:1.25rem; font-weight:600; margin: var(--space-3) 0 var(--space-2) }
+.text-muted{ color: var(--fg-muted) }
+.mt-4{ margin-top: var(--space-4) } .mb-4{ margin-bottom: var(--space-4) }
+.p-4{ padding: var(--space-4) } .p-6{ padding: var(--space-6) }
+.rounded{ border-radius: var(--radius) }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+/* motion */
+*{ transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none !important; animation:none !important; }
+}

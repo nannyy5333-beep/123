@@ -1,0 +1,74 @@
+
+/* --- Supabase STRICT skin (closer to app.supabase.com) --- */
+:root{
+  --bg-0:#0f1117;  /* page background */
+  --bg-1:#0b0d12;  /* rails */
+  --surface:#111318;
+  --elev:#141820;
+  --text:#e5e7eb;
+  --muted:#9aa4af;
+  --border:#242830;
+  --green:#3ecf8e;
+  --green-700:#2eb67d;
+  --radius:12px;
+}
+
+html,body{height:100%}
+body{ background:var(--bg-0); color:var(--text); }
+
+/* Shell */
+.sb-shell{ display:flex; min-height:100vh; }
+.sb-sidebar{
+  width:72px; background:var(--bg-1); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; align-items:center; gap:10px; padding:10px 0;
+  position:sticky; top:0; height:100vh;
+}
+.sb-logo{ display:flex; width:38px; height:38px; align-items:center; justify-content:center;
+  border-radius:10px; background:rgba(62,207,142,.12); color:var(--green); box-shadow:0 0 0 1px rgba(62,207,142,.25) inset;
+}
+.sb-rail{ margin-top:8px; display:flex; flex-direction:column; gap:6px; width:100%; align-items:center; }
+.sb-ic{
+  width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+  color:var(--muted); border-radius:10px; transition:background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.sb-ic:hover{ background:#12151c; color:#cfd6dd; }
+.sb-ic.active{ background:rgba(62,207,142,.10); color:#bfffe1; box-shadow:0 0 0 1px rgba(62,207,142,.35) inset; }
+
+.sb-bottom{ margin-top:auto; display:flex; flex-direction:column; gap:6px; align-items:center; }
+
+/* Topbar */
+.sb-topbar{
+  position:sticky; top:0; z-index:20;
+  height:52px; display:flex; align-items:center; gap:8px;
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+  border-bottom:1px solid var(--border);
+  padding:0 14px;
+}
+.sb-topbar .crumb{ color:var(--muted); font-size:.92rem; }
+.sb-topbar .right{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+.sb-avatar{ width:28px; height:28px; border-radius:999px; background:#1b1f27; display:inline-flex; align-items:center; justify-content:center; color:#9aa4af; }
+
+/* Main */
+.sb-main{ flex:1; padding:14px 16px; }
+
+/* Cards / forms / tables — unify */
+.card{ background:linear-gradient(180deg, var(--elev), var(--surface)); border:1px solid var(--border) !important; border-radius:12px; }
+.table td,.table th{ border-color:var(--border); }
+.form-control,.form-select{ background:#0b1217; border-color:#1d222b; color:var(--text); border-radius:10px; }
+.form-control:focus,.form-select:focus{ border-color:var(--green); box-shadow:0 0 0 .25rem rgba(62,207,142,.2); }
+.btn{ border-radius:10px !important; }
+.btn-primary,.btn-dark{ background:var(--green); border-color:var(--green); color:#00150e; }
+.btn-primary:hover,.btn-dark:hover{ background:var(--green-700); border-color:var(--green-700); }
+
+/* Links */
+a{ color:#68f0b3; }
+a:hover{ color:#b0ffdc; text-decoration:none; }
+
+/* Flash */
+.alert{ border-radius:10px; border-color:var(--border); }
+
+/* Heading spacing */
+h4{ margin-top:2px; }
+
+/* Icon svg base */
+.sb-ic svg{ width:20px; height:20px; stroke: currentColor; }

@@ -1,0 +1,103 @@
+
+/* --- Supa Design System: type, grays, states, shadows --- */
+:root{
+  /* Typeface */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+
+  /* Gray scale (closest to Supabase) */
+  --gray-0:#0f1117;
+  --gray-1:#111318;
+  --gray-2:#141820;
+  --gray-3:#1a1f29;
+  --gray-4:#222836;
+  --gray-5:#2b3242;
+  --gray-6:#353e50;
+  --gray-7:#445066;
+  --gray-8:#59657c;
+  --gray-9:#7a869b;
+  --gray-10:#9aa4af;
+  --gray-11:#c3c9d0;
+  --gray-12:#e7eaee;
+
+  /* Brand & status */
+  --brand:#3ecf8e;
+  --brand-700:#2eb67d;
+  --ok:#22c55e;
+  --warn:#f59e0b;
+  --err:#ef4444;
+  --info:#60a5fa;
+
+  /* Surfaces & borders */
+  --bg: var(--gray-0);
+  --rail: var(--gray-1);
+  --surface: linear-gradient(180deg, var(--gray-2), var(--gray-1));
+  --border: #242830;
+
+  /* Type scale */
+  --fs-1: .75rem;
+  --fs-2: .875rem;
+  --fs-3: 1rem;
+  --fs-4: 1.125rem;
+  --fs-5: 1.25rem;
+  --fs-6: 1.5rem;
+
+  /* Shadows */
+  --shadow-1: 0 8px 28px rgba(0,0,0,.35);
+  --shadow-2: 0 14px 48px rgba(0,0,0,.45);
+}
+
+body{ font-family: var(--font-sans); color: var(--gray-12); background: var(--bg); }
+
+/* Utilities */
+.shadow-1{ box-shadow: var(--shadow-1); }
+.shadow-2{ box-shadow: var(--shadow-2); }
+.round-lg{ border-radius: 14px; }
+
+/* Unified cards */
+.card{ background: var(--surface); border: 1px solid var(--border) !important; border-radius: 12px; box-shadow: var(--shadow-1); }
+
+/* Navigation fine-tune */
+.sb-sidebar{ background: var(--rail); border-right: 1px solid var(--border); }
+.sb-ic{ color: var(--gray-10); }
+.sb-ic.active{ color: #caffea; box-shadow: 0 0 0 1px rgba(62,207,142,.35) inset; background: rgba(62,207,142,.1); }
+
+/* Buttons */
+.btn{ border-radius: 10px !important; }
+.btn-primary,.btn-dark{ background: var(--brand); border-color: var(--brand); color:#00150e; }
+.btn-primary:hover,.btn-dark:hover{ background: var(--brand-700); border-color: var(--brand-700); }
+.btn-outline-primary{ color: var(--brand); border-color: var(--brand); }
+.btn-outline-primary:hover{ background: rgba(62,207,142,.12); color: #b6ffdd; }
+
+/* Tables */
+.table{ color: var(--gray-12); }
+.table thead th{ color: var(--gray-10); border-bottom-color: var(--border); text-transform: uppercase; font-size: var(--fs-1); letter-spacing:.6px; }
+.table td,.table th{ border-color: var(--border); }
+.table-hover tbody tr:hover{ background: rgba(62,207,142,.08); box-shadow: inset 2px 0 0 var(--brand); }
+
+/* Forms */
+.form-control,.form-select{ background:#0b1217; color: var(--gray-12); border:1px solid #1d222b; border-radius:10px; }
+.form-control:focus,.form-select:focus{ border-color: var(--brand); box-shadow: 0 0 0 .28rem rgba(62,207,142,.22); }
+
+/* Status "traffic-light" pills */
+.pill{ display:inline-flex; align-items:center; gap:.4rem; padding:.28rem .6rem; border-radius:999px; font-size: var(--fs-2); letter-spacing:.2px; border:1px solid var(--border); }
+.pill-dot{ width:.5rem; height:.5rem; border-radius:999px; display:inline-block; }
+.pill.ok{ background: rgba(34,197,94,.12); color:#caffea; border-color: rgba(34,197,94,.35); }
+.pill.ok .pill-dot{ background:#22c55e; box-shadow: 0 0 8px rgba(34,197,94,.6); }
+.pill.warn{ background: rgba(245,158,11,.12); color:#ffe8b2; border-color: rgba(245,158,11,.35); }
+.pill.warn .pill-dot{ background:#f59e0b; box-shadow: 0 0 8px rgba(245,158,11,.6); }
+.pill.err{ background: rgba(239,68,68,.12); color:#ffd4d4; border-color: rgba(239,68,68,.35); }
+.pill.err .pill-dot{ background:#ef4444; box-shadow: 0 0 8px rgba(239,68,68,.6); }
+.pill.neutral{ background: rgba(255,255,255,.06); color: var(--gray-12); }
+
+/* Environment chips */
+.env-chip{ display:inline-flex; align-items:center; gap:.4rem; border:1px solid var(--border); padding:.24rem .56rem; border-radius:999px; font-size: var(--fs-1); letter-spacing:.3px; }
+.env-prod{ background: rgba(239,68,68,.12); color:#ffd4d4; }
+.env-stage{ background: rgba(245,158,11,.12); color:#ffe8b2; }
+.env-dev{ background: rgba(99,102,241,.14); color:#e2e8ff; }
+
+/* Soft separators */
+hr{ border-color: var(--border); }
+
+/* Typography tweaks */
+h1,h2,h3,h4,h5{ letter-spacing:.2px; }
+.small-muted{ color: var(--gray-10); font-size: var(--fs-2); }

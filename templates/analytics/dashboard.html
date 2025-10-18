@@ -1,0 +1,212 @@
+
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Дашборд</h4>
+  <div class="d-inline-flex gap-2">
+    {% if role_in("admin","manager") %}
+      <a class="btn btn-sm btn-dark" href="{{ url_for('products.new') }}">+ Товар</a>
+      <a class="btn btn-sm btn-outline-primary" href="{{ url_for('products.bulk') }}">Пакетные операции</a>
+      <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('exports.all_zip') }}">Экспорт ZIP</a>
+      <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('exports.pricelist_pdf') }}">Прайс PDF</a>
+    {% endif %}
+    <a class="btn btn-sm btn-outline-light" href="{{ url_for('scheduled.list_') }}">Автопостинг</a>
+  </div>
+</div>
+
+{% if env_alerts %}
+  <div class="alert alert-warning">
+    <b>Внимание:</b>
+    <ul class="mb-0">
+      {% for a in env_alerts %}<li>{{ a }}</li>{% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card shadow-sm"><div class="card-body">
+      <div class="text-muted">Заказы сегодня</div>
+      <div class="fs-3">{{ kpis.orders_today }}</div>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm"><div class="card-body">
+      <div class="text-muted">Выручка сегодня</div>
+      <div class="fs-3">{{ "%.2f"|format(kpis.revenue_today) }}</div>
+      <div class="small text-muted">Средний чек: {{ "%.2f"|format((kpis.revenue_today / kpis.orders_today) if kpis.orders_today else 0) }}</div>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm"><div class="card-body">
+      <div class="text-muted">Открытые заказы</div>
+      <div class="fs-3">{{ open_orders }}</div>
+    </div></div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm"><div class="card-body">
+      <div class="text-muted">Товаров / Клиентов</div>
+      <div class="fs-3">{{ kpis.products }} / {{ kpis.customers }}</div>
+    </div></div>
+  </div>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-md-4">
+    <div class="card shadow-sm"><div class="card-body">
+      <div class="text-muted">Месяц (MTD)</div>
+      <div class="fs-5">Выручка: {{ "%.2f"|format(month.revenue) }}</div>
+      <div class="small">Заказы: {{ month.orders }}</div>
+      <div class="small">Средний чек: {{ "%.2f"|format(month.avg_check) }}</div>
+      <div class="small text-danger">Возвраты: {{ "%.2f"|format(month.refunds) }}</div>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm"><div class="card-body">
+      <div class="text-muted">Конверсия (30 дней)</div>
+      <div class="fs-5">{{ ("%.1f"|format(conversion)) ~ "%" if conversion is not none else "—" }}</div>
+      <div class="small text-muted">≈ (paid+done) / created</div>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm"><div class="card-body">
+      <div class="text-muted">Порог низкого остатка</div>
+      <div class="fs-5">≤ {{ low_thr }}</div>
+      <div class="small text-muted">LOW_STOCK_THRESHOLD в .env</div>
+    </div></div>
+  </div>
+</div>
+
+<div class="card my-3"><div class="card-body">
+  <h6>Выручка и заказы по дням (14д)</h6>
+  <canvas id="revChart" height="80"></canvas>
+</div></div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card"><div class="card-body">
+      <h6>Статусы заказов (30д)</h6>
+      <canvas id="statusPie" height="80"></canvas>
+    </div></div>
+  </div>
+  <div class="col-md-6">
+    <div class="card"><div class="card-body">
+      <h6>Топ товаров — месяц</h6>
+      <canvas id="topMonth" height="80"></canvas>
+    </div></div>
+  </div>
+</div>
+
+<div class="row g-3 my-3">
+  <div class="col-md-6">
+    <div class="card"><div class="card-body">
+      <h6>Недавние заказы</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle mb-0">
+          <thead><tr><th>ID</th><th>Клиент</th><th>Статус</th><th>Оплата</th><th>Сумма</th><th>Дата</th></tr></thead>
+          <tbody>
+          {% for o in recent_orders %}
+            <tr>
+              <td><a href="{{ url_for('orders.details', oid=o.id) }}" class="link-light">{{ o.id }}</a></td>
+              <td>{{ o.user_id }}</td>
+              <td>{% set s=(o.status or "created") %}{% set cls= "ok" if s in ["paid","done","shipped","confirmed"] else ("warn" if s in ["created","pending","processing"] else ("err" if s in ["canceled","refunded"] else "neutral")) %}<span class="pill {{ cls }}"><span class="pill-dot"></span>{{ s }}</span></td>
+              <td>{% set p=(o.payment_status or "-") %}{% set pcl = "ok" if p=="paid" else ("warn" if p in ["pending","unpaid"] else ("err" if p in ["refunded","failed"] else "neutral")) %}<span class="pill {{ pcl }}"><span class="pill-dot"></span>{{ p }}</span></td>
+              <td>{{ "%.2f"|format(o.total or 0) }}</td>
+              <td>{{ o.created_at[:19] if o.created_at else '' }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div></div>
+  </div>
+  <div class="col-md-6">
+    <div class="card"><div class="card-body">
+      <h6>Низкие остатки</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped mb-0">
+          <thead><tr><th>ID</th><th>Товар</th><th>Ост.</th><th>Цена</th><th></th></tr></thead>
+          <tbody>
+          {% for p in low_stock %}
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>{{ p.name }}</td>
+              <td>{{ p.stock or 0 }}</td>
+              <td>{{ "%.2f"|format(p.price or 0) }}</td>
+              <td class="text-end">
+                {% if role_in("admin","manager") %}
+                <form class="d-inline" method="post" action="{{ url_for('inventory.adjust', pid=p.id) }}">
+                  <input type="hidden" name="delta" value="5"><input type="hidden" name="reason" value="restock">
+                  <button class="btn btn-sm btn-outline-success">+5</button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<div class="card my-3"><div class="card-body">
+  <h6>Ближайшие автопосты</h6>
+  <div class="table-responsive">
+    <table class="table table-sm table-striped mb-0">
+      <thead><tr><th>ID</th><th>Товар</th><th>Когда</th><th>Подпись</th><th>Статус</th><th></th></tr></thead>
+      <tbody>
+      {% for s in upcoming_posts %}
+        <tr>
+          <td>{{ s.id }}</td>
+          <td>{{ s.product_id }}</td>
+          <td>{{ s.run_at }}</td>
+          <td>{{ s.caption or '-' }}</td>
+          <td>{{ s.status }}</td>
+          <td class="text-end">
+            {% if role_in("admin","manager") %}
+            <form method="post" action="{{ url_for('scheduled.post_now', pid=s.product_id) }}" style="display:inline">
+              <input type="hidden" name="caption" value="{{ s.caption or '' }}">
+              <button class="btn btn-sm btn-outline-primary">Отправить</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div></div>
+
+<script>
+// Revenue / Orders combined
+const ctx = document.getElementById('revChart');
+const ts = {{ ts|tojson }};
+new Chart(ctx, {
+  type: 'bar',
+  data: { labels: ts.labels, datasets: [
+    { label: 'Выручка', type: 'line', data: ts.revenue },
+    { label: 'Заказы', type: 'bar', data: ts.orders }
+  ]},
+  options: { responsive: true, scales: { y: { beginAtZero: true } } }
+});
+
+// Status pie
+const statusLabels = {{ statuses.keys()|list|tojson }};
+const statusVals = {{ statuses.values()|list|tojson }};
+new Chart(document.getElementById('statusPie'), {
+  type: 'doughnut',
+  data: { labels: statusLabels, datasets: [{ data: statusVals }] },
+  options: { responsive: true }
+});
+
+// Top products month
+const topLabels = {{ (top_month|map(attribute='name')|list)|tojson }};
+const topVals = {{ (top_month|map(attribute='revenue')|list)|tojson }};
+new Chart(document.getElementById('topMonth'), {
+  type: 'bar',
+  data: { labels: topLabels, datasets: [{ label: 'Выручка', data: topVals }] },
+  options: { responsive: true, scales: { y: { beginAtZero: true } } }
+});
+</script>
+{% endblock %}

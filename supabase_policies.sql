@@ -1,0 +1,13 @@
+
+-- Пример RLS политик для Supabase (настраивайте под роли и JWT).
+-- 1) Включите RLS
+-- alter table products enable row level security;
+-- 2) Разрешения для сервис-ключа (по умолчанию имеет bypass RLS).
+-- 3) Примеры политик для анонимного чтения каталога (если требуется):
+-- create policy "anon can read products"
+--   on products for select using (true);
+-- 4) Политики для staff (если используете auth.users и внешние роли):
+-- create role staff;
+-- grant usage on schema public to staff;
+-- grant select, insert, update, delete on all tables in schema public to staff;
+-- alter default privileges in schema public grant select, insert, update, delete on tables to staff;
