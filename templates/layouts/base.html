@@ -23,6 +23,7 @@
   
 <link rel="preload" as="style" href="{{ url_for('static', filename='css/bundle.min.css') }}" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/bundle.min.css') }}"></noscript>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/design_improvements.css') }}">
 </head>
   <body class="theme-dark">
     <div class="sb-topbar">
@@ -74,5 +75,6 @@
     </div>
     <script>window.addEventListener('DOMContentLoaded',()=>{ if(window.lucide){ window.lucide.createIcons(); } });</script>
     <script defer src="{{ url_for('static', filename='js/ui.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/design_improvements.js') }}"></script>
 </body>
 </html>
